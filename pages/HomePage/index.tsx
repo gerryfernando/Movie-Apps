@@ -8,11 +8,21 @@ import {
   Text,
   View,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import CardCom from '../../components/CardCom';
+import API from '../../services/axios';
+import {ActivityIndicator} from 'react-native-paper';
 
+type ResponseMovie = {
+  results: Record<string, any>[];
+};
 function HomePage(): React.JSX.Element {
+  const [dataNowPlaying, setDataNowPlaying] = useState<Record<string, any>[]>(
+    [],
+  );
+  const [dataTopRated, setDataTopRated] = useState<Record<string, any>[]>([]);
+  const [dataPopular, setDataPopular] = useState<Record<string, any>[]>([]);
   const [name, setName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const backgroundStyle = {
     backgroundColor: '#fff',
   };
@@ -27,26 +37,47 @@ function HomePage(): React.JSX.Element {
       justifyContent: 'space-between',
       marginBottom: 10,
     },
+    column: {
+      flexDirection: 'column',
+      marginBottom: 10,
+    },
   });
 
-  // const getMovieData = () => {
-  //    const url = "/food-order/foods";
-  //   API.get<ResponseGetFood>(url, {
-  //     params: {
-  //       ...params,
-  //       pageNumber: params.pageNumber ? Number(params.pageNumber) : 1,
-  //       pageSize: params.pageSize ? Number(params.pageSize) : 10,
-  //     },
-  //   })
-  //     .then(({ data }) => {
-  //       setTotalPages(data.total);
-  //       setDataRow(data.data);
-  //     })
-  //     .catch((error: unknown) => console.log(error))
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // };
+  const getMovieData = async () => {
+    try {
+      setLoading(true);
+      const urlNP = 'movie/now_playing';
+      const urlTR = 'movie/top_rated';
+      const urlP = 'movie/popular';
+      const resNowPlaying = await API.get<ResponseMovie>(urlNP, {
+        params: {
+          page: 1,
+        },
+      });
+      const resTopRated = await API.get<ResponseMovie>(urlTR, {
+        params: {
+          page: 1,
+        },
+      });
+      const resPopular = await API.get<ResponseMovie>(urlP, {
+        params: {
+          page: 1,
+        },
+      });
+      setDataNowPlaying(resNowPlaying.data.results);
+      setDataPopular(resPopular.data.results);
+      setDataTopRated(resTopRated.data.results);
+      console.log(resNowPlaying.data.results[0].id);
+    } catch {
+      console.log('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getMovieData();
+  }, []);
 
   useEffect(() => {
     const getUsername = async () => {
@@ -59,171 +90,84 @@ function HomePage(): React.JSX.Element {
   }, []);
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={'light-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+      {loading ? (
         <View
           style={{
-            backgroundColor: backgroundStyle.backgroundColor,
-            paddingHorizontal: 30,
-            paddingVertical: 50,
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          <Text style={{fontWeight: 'bold'}}>Hello, {name} </Text>
-          <Text style={{fontWeight: 'bold'}}>Home Page</Text>
-
-          <Text style={{fontWeight: 'bold'}}>Now Played</Text>
-          <ScrollView horizontal>
-            <View style={styles.row}>
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//6PCnxKZZIVRanWb710pNpYVkCSw.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//6PCnxKZZIVRanWb710pNpYVkCSw.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//6PCnxKZZIVRanWb710pNpYVkCSw.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//6PCnxKZZIVRanWb710pNpYVkCSw.jpg"
-              />
-            </View>
-          </ScrollView>
-          <Text style={{fontWeight: 'bold'}}>Popular</Text>
-          <ScrollView horizontal>
-            <View style={styles.row}>
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/4ft6TR9wA6bra0RLL6G7JFDQ5t1.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/4ft6TR9wA6bra0RLL6G7JFDQ5t1.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/4ft6TR9wA6bra0RLL6G7JFDQ5t1.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/4ft6TR9wA6bra0RLL6G7JFDQ5t1.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//wWba3TaojhK7NdycRhoQpsG0FaH.jpg"
-              />
-            </View>
-          </ScrollView>
-          <Text style={{fontWeight: 'bold'}}>Top Rated</Text>
-          <ScrollView horizontal>
-            <View style={styles.row}>
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/nnl6OWkyPpuMm595hmAxNW3rZFn.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//pjnD08FlMAIXsfOLKQbvmO0f0MD.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/nnl6OWkyPpuMm595hmAxNW3rZFn.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//pjnD08FlMAIXsfOLKQbvmO0f0MD.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/nnl6OWkyPpuMm595hmAxNW3rZFn.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//pjnD08FlMAIXsfOLKQbvmO0f0MD.jpg"
-              />
-              <CardCom
-                title="Despicable Me 4"
-                subtitle="2020,Movie"
-                img="https://image.tmdb.org/t/p/w500/nnl6OWkyPpuMm595hmAxNW3rZFn.jpg"
-              />
-              <CardCom
-                title="The Killer"
-                subtitle="2024"
-                content="tes aja"
-                img="https://image.tmdb.org/t/p/w500//pjnD08FlMAIXsfOLKQbvmO0f0MD.jpg"
-              />
-            </View>
-          </ScrollView>
+          <ActivityIndicator animating={true} />
         </View>
-      </ScrollView>
+      ) : (
+        <>
+          <StatusBar
+            barStyle={'light-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={backgroundStyle}>
+            <View
+              style={{
+                backgroundColor: backgroundStyle.backgroundColor,
+                paddingHorizontal: 30,
+                paddingVertical: 50,
+              }}>
+              <Text style={{fontWeight: 'bold'}}>Hello, {name} </Text>
+              <Text style={{fontWeight: 'bold'}}>Home Page</Text>
+
+              <Text style={{fontWeight: 'bold'}}>Now Played</Text>
+              <ScrollView horizontal>
+                <View style={styles.row}>
+                  {dataNowPlaying?.map(val => {
+                    console.log(val);
+                    return (
+                      <CardCom
+                        title={val.original_title}
+                        subtitle={val.overview}
+                        img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
+                        idMovie={val?.id}
+                      />
+                    );
+                  })}
+                </View>
+              </ScrollView>
+              <Text style={{fontWeight: 'bold'}}>Popular</Text>
+              <ScrollView horizontal>
+                <View style={styles.row}>
+                  {dataPopular?.map(val => {
+                    return (
+                      <CardCom
+                        title={val.original_title}
+                        subtitle={val.overview}
+                        img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
+                        idMovie={val?.id}
+                      />
+                    );
+                  })}
+                </View>
+              </ScrollView>
+              <Text style={{fontWeight: 'bold'}}>Top Rated</Text>
+              <ScrollView>
+                <View style={styles.column}>
+                  {dataTopRated?.map(val => {
+                    return (
+                      <CardCom
+                        title={val.original_title}
+                        subtitle={val.overview}
+                        img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                        isFull
+                        idMovie={val?.id}
+                      />
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            </View>
+          </ScrollView>
+        </>
+      )}
     </SafeAreaView>
   );
 }

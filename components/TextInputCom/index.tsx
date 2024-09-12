@@ -6,12 +6,21 @@ type Props = {
   placeholder?: string;
   label?: string;
   password?: boolean;
+  icon?: string;
+  fullWidth?: boolean;
 };
 
 function TextInputCom(props: Props): React.JSX.Element {
-  const {placeholder, label, password = false} = props;
+  const {placeholder, label, password = false, icon, fullWidth} = props;
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const styles = StyleSheet.create({
+    textInput: {
+      width: fullWidth ? undefined : 250,
+      overflow: 'hidden',
+      marginBottom: 12,
+      borderRadius: 10,
+    },
+  });
   return (
     <View>
       <TextInput
@@ -23,11 +32,15 @@ function TextInputCom(props: Props): React.JSX.Element {
         secureTextEntry={password && passwordVisible}
         theme={{roundness: 10}}
         right={
-          password && (
+          password ? (
             <TextInput.Icon
               icon={passwordVisible ? 'eye-off' : 'eye'}
               onPress={() => setPasswordVisible(!passwordVisible)}
             />
+          ) : icon ? (
+            <TextInput.Icon icon={icon} />
+          ) : (
+            <></>
           )
         }
         {...props}
@@ -36,12 +49,4 @@ function TextInputCom(props: Props): React.JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
-  textInput: {
-    width: 250,
-    overflow: 'hidden',
-    marginBottom: 12,
-    borderRadius: 10,
-  },
-});
 export default TextInputCom;

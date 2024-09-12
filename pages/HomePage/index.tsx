@@ -5,12 +5,12 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import CardCom from '../../components/CardCom';
 import API from '../../services/axios';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Text} from 'react-native-paper';
+import TextInputCom from '../../components/TextInputCom';
 
 type ResponseMovie = {
   results: Record<string, any>[];
@@ -114,10 +114,19 @@ function HomePage(): React.JSX.Element {
                 paddingHorizontal: 30,
                 paddingVertical: 50,
               }}>
-              <Text style={{fontWeight: 'bold'}}>Hello, {name} </Text>
-              <Text style={{fontWeight: 'bold'}}>Home Page</Text>
-
-              <Text style={{fontWeight: 'bold'}}>Now Played</Text>
+              <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+                Hello, {name}{' '}
+              </Text>
+              <TextInputCom
+                label="Search Bar"
+                icon="magnify"
+                fullWidth
+                // value="123"
+                // onChangeText={text => setText(text)}
+              />
+              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                Now Played
+              </Text>
               <ScrollView horizontal>
                 <View style={styles.row}>
                   {dataNowPlaying?.map(val => {
@@ -133,7 +142,9 @@ function HomePage(): React.JSX.Element {
                   })}
                 </View>
               </ScrollView>
-              <Text style={{fontWeight: 'bold'}}>Popular</Text>
+              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                Popular
+              </Text>
               <ScrollView horizontal>
                 <View style={styles.row}>
                   {dataPopular?.map(val => {
@@ -148,7 +159,9 @@ function HomePage(): React.JSX.Element {
                   })}
                 </View>
               </ScrollView>
-              <Text style={{fontWeight: 'bold'}}>Top Rated</Text>
+              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                Top Rated
+              </Text>
               <ScrollView>
                 <View style={styles.column}>
                   {dataTopRated?.map(val => {

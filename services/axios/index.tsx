@@ -1,19 +1,14 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.API_BASE_URL,
   // Replace with your API base URL
 });
 
 // Request interceptor
 API.interceptors.request.use(
   config => {
-    // Modify the request config here (add headers, authentication tokens)
-    // const getToken =
-    //   typeof window !== "undefined"
-    //     ? localStorage.getItem("token")
-    //     : "";
-    const accessToken = 'getToken';
+    const accessToken = process.env.AUTH_TOKEN;
 
     // If token is present add it to request's Authorization Header
     if (accessToken) {

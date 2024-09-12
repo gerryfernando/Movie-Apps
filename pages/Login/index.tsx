@@ -15,7 +15,7 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
   const {colors} = useTheme();
   const bgLogin = require('../../assets/bgLogin.jpg');
   const onLoginClick = async () => {
-    await AsyncStorage.setItem('username', 'tess');
+    await AsyncStorage.setItem('username', 'Aku User 1123');
     navigation.navigate('Main');
   };
 

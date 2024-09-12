@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {Button, Dialog, Portal, Text, useTheme} from 'react-native-paper';
+// import {API_BASE_URL} from '@env';
 
 function ProfilPage(): React.JSX.Element {
   const {colors} = useTheme();
@@ -12,6 +13,8 @@ function ProfilPage(): React.JSX.Element {
   const showDialog = () => setVisible(true);
 
   const hideDialog = () => setVisible(false);
+
+  // console.log(API_BASE_URL);
 
   const Logout = async () => {
     await AsyncStorage.clear();
@@ -31,7 +34,10 @@ function ProfilPage(): React.JSX.Element {
         </Button>
       </View>
       <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
+        <Dialog
+          style={{backgroundColor: '#fff'}}
+          visible={visible}
+          onDismiss={hideDialog}>
           <Dialog.Title>Logout Confirm</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">Are you sure want to do logout?</Text>

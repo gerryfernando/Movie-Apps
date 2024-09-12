@@ -44,6 +44,8 @@ const BottomNavigation = () => {
       navigationState={{index, routes}}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      theme={{colors: {secondaryContainer: '#fff'}}}
+      barStyle={{backgroundColor: 'rgba(255, 0, 0, 0.4)'}}
     />
   );
 };

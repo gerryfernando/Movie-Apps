@@ -1,12 +1,47 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {Button, Dialog, Portal, Text, useTheme} from 'react-native-paper';
 
 function ProfilPage(): React.JSX.Element {
+  const {colors} = useTheme();
+  const navigation = useNavigation<any>();
+  const [visible, setVisible] = React.useState(false);
+
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
+
+  const Logout = async () => {
+    await AsyncStorage.clear();
+    navigation.navigate('Login');
+  };
   return (
     <SafeAreaView>
       <View style={styles.centeredView}>
         <Text>Profil Page</Text>
+        <Button
+          textColor={colors.tertiary}
+          onPress={async () => {
+            showDialog();
+          }}
+          mode="contained">
+          Logout
+        </Button>
       </View>
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title>Logout Confirm</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">Are you sure want to do logout?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancel</Button>
+            <Button onPress={Logout}>Yes</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </SafeAreaView>
   );
 }

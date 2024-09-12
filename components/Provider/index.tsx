@@ -9,6 +9,12 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
+    primary: '#C7253E',
+    onPrimary: '#821131',
+    secondary: '#E85C0D',
+    onSecondary: '#FABC3F',
+    background: '#fff',
+    tertiary: '#fff',
   },
 };
 

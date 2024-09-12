@@ -15,11 +15,13 @@ function TextInputCom(props: Props): React.JSX.Element {
   return (
     <View>
       <TextInput
-        mode="outlined"
+        mode="flat"
+        underlineColor="transparent"
         label={label}
         style={styles.textInput}
         placeholder={placeholder}
         secureTextEntry={password && passwordVisible}
+        theme={{roundness: 10}}
         right={
           password && (
             <TextInput.Icon
@@ -36,8 +38,10 @@ function TextInputCom(props: Props): React.JSX.Element {
 
 const styles = StyleSheet.create({
   textInput: {
-    width: 200,
+    width: 250,
+    overflow: 'hidden',
     marginBottom: 12,
+    borderRadius: 10,
   },
 });
 export default TextInputCom;

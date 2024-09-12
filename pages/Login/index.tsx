@@ -1,30 +1,74 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import TextInputCom from '../../components/TextInputCom';
+import {Button, useTheme} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function LoginPage(): React.JSX.Element {
+function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
+  const {colors} = useTheme();
+  const bgLogin = require('../../assets/bgLogin.jpg');
+  const onLoginClick = async () => {
+    await AsyncStorage.setItem('username', 'tess');
+    navigation.navigate('Main');
+  };
+
+  const styles = StyleSheet.create({
+    buttonLogin: {
+      width: 220,
+      marginVertical: 20,
+      backgroundColor: colors?.onPrimary,
+    },
+    centeredView: {
+      backgroundColor: colors.background,
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    textTitle: {
+      color: colors.tertiary,
+      marginVertical: 20,
+      fontSize: 25,
+      fontWeight: 'bold',
+    },
+    imageBg: {
+      flex: 1,
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
   return (
     <SafeAreaView>
       <View style={styles.centeredView}>
-        <Text>Login Page</Text>
-        <TextInputCom placeholder="Input Username" label="Username" />
-        <TextInputCom placeholder="Input Password" label="Password" password />
+        <ImageBackground
+          source={bgLogin}
+          resizeMode="cover"
+          style={styles.imageBg}>
+          <Text style={styles.textTitle}>Login Page</Text>
+          <TextInputCom placeholder="Input Username" label="Username" />
+          <TextInputCom
+            placeholder="Input Password"
+            label="Password"
+            password
+          />
+          <Button
+            textColor={colors.tertiary}
+            onPress={onLoginClick}
+            style={styles.buttonLogin}
+            mode="contained">
+            Login
+          </Button>
+        </ImageBackground>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centeredView: {
-    // backgroundColor: 'red',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default LoginPage;

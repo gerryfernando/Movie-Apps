@@ -1,35 +1,24 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
+import {SafeAreaView, ScrollView, StatusBar, Text, View} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 function HomePage(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: Colors.lighter,
   };
 
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        barStyle={'light-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: Colors.white,
             justifyContent: 'center',
             alignItems: 'center',
             height: 200,

@@ -21,6 +21,7 @@ const DetailMovie: React.FC<Props> = ({route}) => {
   const {id} = route.params;
   const {colors} = useTheme();
   const [loading, setLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = React.useState<boolean>(false);
   const [data, setData] = useState<Record<string, any>>({});
   const [dataImages, setDataImages] = useState<Record<string, any>[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -55,6 +56,33 @@ const DetailMovie: React.FC<Props> = ({route}) => {
       console.log('error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const AddFavorite = async () => {
+    try {
+      setLoadingButton(true);
+      const userId = process.env.USER_ID;
+      const url = `/account/${userId}/favorite`;
+      await API.post(
+        url,
+        {
+          media_type: 'movie',
+          media_id: id,
+          favorite: true,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      );
+      setIsFavorite(true);
+    } catch {
+      console.log('error');
+    } finally {
+      setLoadingButton(false);
     }
   };
 
@@ -166,7 +194,8 @@ const DetailMovie: React.FC<Props> = ({route}) => {
                       textColor={isFavorite ? '#fff' : undefined}
                       icon={isFavorite ? 'star' : 'star-outline'}
                       mode="outlined"
-                      onPress={() => setIsFavorite(!isFavorite)}>
+                      loading={loadingButton}
+                      onPress={AddFavorite}>
                       {isFavorite ? 'My Favorite' : 'Add to Favorite'}
                     </Button>
                   </View>

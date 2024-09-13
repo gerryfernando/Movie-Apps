@@ -3,6 +3,7 @@ import {BottomNavigation as BNavigation} from 'react-native-paper';
 import FavoritePage from '../../pages/FavoritePage';
 import ProfilPage from '../../pages/ProfilPage';
 import HomeRouter from '../../pages/HomeRoute';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeRoute = () => <HomeRouter />;
 
@@ -11,6 +12,7 @@ const FavoriteRoute = () => <FavoritePage />;
 const ProfilRoute = () => <ProfilPage />;
 
 const BottomNavigation = () => {
+  const navigation = useNavigation();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
@@ -38,6 +40,10 @@ const BottomNavigation = () => {
     favorite: FavoriteRoute,
     profil: ProfilRoute,
   });
+
+  React.useEffect(() => {
+    setIndex(0);
+  }, [navigation]);
 
   return (
     <BNavigation

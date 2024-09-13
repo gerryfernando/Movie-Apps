@@ -1,17 +1,19 @@
+import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {Button, Card} from 'react-native-paper';
+import {Button, Card, Text} from 'react-native-paper';
 
 interface Props {
   title?: string;
   subtitle?: string | React.ReactNode;
   img?: string;
   isFull?: boolean;
+  content?: string | React.ReactNode;
   idMovie?: number;
 }
 
 const CardCom: React.FC<Props> = props => {
-  const {title, subtitle, img, isFull = false, idMovie} = props;
-
+  const {title, subtitle, img, isFull = false, idMovie, content} = props;
+  const navigation = useNavigation<any>();
   return (
     <Card
       style={{
@@ -23,14 +25,18 @@ const CardCom: React.FC<Props> = props => {
         style={{borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
         source={{uri: img}}
       />
-      <Card.Title title={title} subtitle={subtitle} />
-      {/* <Card.Content>
-        <Text variant="bodyMedium">{content}</Text>
-      </Card.Content> */}
+      <Card.Title title={title} subtitle={subtitle || ''} />
+      {content && (
+        <Card.Content>
+          <Text variant="bodyMedium">{content}</Text>
+        </Card.Content>
+      )}
       <Card.Actions>
         <Button
           mode="contained"
-          onPress={() => console.log(idMovie)}
+          onPress={() => {
+            navigation.navigate('Detail', {id: idMovie});
+          }}
           textColor="#fff">
           Detail
         </Button>

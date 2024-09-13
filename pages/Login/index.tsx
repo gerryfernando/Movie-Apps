@@ -1,23 +1,26 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
+  Alert,
+  Image,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
 import TextInputCom from '../../components/TextInputCom';
 import {Button, useTheme} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {FormProvider, useForm} from 'react-hook-form';
+import API from '../../services/axios';
 
 function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
   const {colors} = useTheme();
+  const RHF = useForm();
+  const {handleSubmit, reset} = RHF;
+  const [loading, setLoading] = useState(false);
   const bgLogin = require('../../assets/bgLogin.jpg');
-  const onLoginClick = async () => {
-    await AsyncStorage.setItem('username', 'Aku User 1123');
-    navigation.navigate('Main');
-  };
+  const logo = require('../../assets/logo.png');
 
   const styles = StyleSheet.create({
     buttonLogin: {
@@ -43,7 +46,48 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
       justifyContent: 'center',
       alignItems: 'center',
     },
+    formContainer: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      rowGap: 12,
+    },
   });
+
+  const onSubmitLogin = async (data: any) => {
+    try {
+      setLoading(true);
+      console.log(data);
+
+      const resReqToken = await API.get('authentication/token/new');
+
+      await API.post('authentication/token/validate_with_login', {
+        username: data?.username,
+        password: data?.password,
+        request_token: resReqToken?.data?.request_token,
+      });
+
+      const resSession = await API.post(
+        'authentication/session/new',
+        {request_token: resReqToken?.data?.request_token},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      );
+      await AsyncStorage.setItem('username', data?.username);
+      await AsyncStorage.setItem('sessionId', resSession?.data?.session_id);
+      navigation.navigate('Main');
+      reset({});
+    } catch (error) {
+      Alert.alert('Login Failed', 'Incorrect password or username ', [
+        {text: 'OK'},
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <SafeAreaView>
       <View style={styles.centeredView}>
@@ -51,20 +95,37 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
           source={bgLogin}
           resizeMode="cover"
           style={styles.imageBg}>
-          <Text style={styles.textTitle}>Login Page</Text>
-          <TextInputCom placeholder="Input Username" label="Username" />
-          <TextInputCom
-            placeholder="Input Password"
-            label="Password"
-            password
+          <Image
+            style={{width: 100, height: 100, marginBottom: 20}}
+            source={logo}
           />
-          <Button
-            textColor={colors.tertiary}
-            onPress={onLoginClick}
-            style={styles.buttonLogin}
-            mode="contained">
-            Login
-          </Button>
+          <FormProvider {...RHF}>
+            <View style={styles.formContainer}>
+              <TextInputCom
+                RHF={RHF}
+                required
+                name="username"
+                placeholder="Input Username"
+                label="Username"
+              />
+              <TextInputCom
+                RHF={RHF}
+                required
+                name="password"
+                placeholder="Input Password"
+                label="Password"
+                password
+              />
+              <Button
+                textColor={colors.tertiary}
+                style={styles.buttonLogin}
+                onPress={handleSubmit(onSubmitLogin)}
+                loading={loading}
+                mode="contained">
+                Login
+              </Button>
+            </View>
+          </FormProvider>
         </ImageBackground>
       </View>
     </SafeAreaView>

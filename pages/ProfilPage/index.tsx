@@ -16,6 +16,7 @@ function ProfilPage(): React.JSX.Element {
   const Logout = async () => {
     await AsyncStorage.clear();
     navigation.navigate('Login');
+    hideDialog();
   };
   return (
     <SafeAreaView>

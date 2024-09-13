@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {BottomNavigation as BNavigation} from 'react-native-paper';
-import HomePage from '../../pages/HomePage';
 import FavoritePage from '../../pages/FavoritePage';
 import ProfilPage from '../../pages/ProfilPage';
+import HomeRouter from '../../pages/HomeRoute';
 
-const HomeRoute = () => <HomePage />;
+const HomeRoute = () => <HomeRouter />;
 
 const FavoriteRoute = () => <FavoritePage />;
 

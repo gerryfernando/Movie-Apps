@@ -56,7 +56,6 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
   const onSubmitLogin = async (data: any) => {
     try {
       setLoading(true);
-      console.log(data);
 
       const resReqToken = await API.get('authentication/token/new');
 
@@ -124,6 +123,14 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
                 mode="contained">
                 Login
               </Button>
+              {/* <Button
+                textColor={colors.tertiary}
+                style={styles.buttonLogin}
+                onPress={() => navigation.navigate('Main')}
+                loading={loading}
+                mode="contained">
+                test
+              </Button> */}
             </View>
           </FormProvider>
         </ImageBackground>

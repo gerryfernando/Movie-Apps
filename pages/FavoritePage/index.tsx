@@ -49,9 +49,7 @@ function FavoritePage(): React.JSX.Element {
     React.useCallback(() => {
       getDataFavorite();
 
-      return () => {
-        console.log('Home screen is unfocused');
-      };
+      return () => {};
     }, []),
   );
 

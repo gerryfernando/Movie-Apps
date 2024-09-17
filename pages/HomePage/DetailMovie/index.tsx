@@ -1,5 +1,7 @@
 import {RouteProp} from '@react-navigation/native';
-import React, {ReactNode, useEffect, useState} from 'react';
+import moment from 'moment';
+import React, {useEffect, useState} from 'react';
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ActivityIndicator,
   Button,
@@ -8,13 +10,12 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {RootStackParamList} from '../../HomeRoute';
 import API from '../../../services/axios';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
-import moment from 'moment';
+import {RootStackParamList} from '../../HomeRoute';
 
 type Props = {
   route: RouteProp<RootStackParamList, 'Detail'>;
+  navigation: any;
 };
 
 const DetailMovie: React.FC<Props> = ({route}) => {
@@ -40,8 +41,7 @@ const DetailMovie: React.FC<Props> = ({route}) => {
     try {
       const url = `movie/${id}/images`;
       const res = await API.get<Record<string, any>>(url);
-      setDataImages(res.data?.backdrops);
-      console.log(res.data);
+      setDataImages([...res.data?.backdrops]);
     } catch {
       console.log('error');
     }

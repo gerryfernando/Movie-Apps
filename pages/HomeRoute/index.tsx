@@ -1,8 +1,9 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import HomePage from '../HomePage';
 import DetailMovie from '../HomePage/DetailMovie';
+import {useNavigation} from '@react-navigation/native';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -12,6 +13,12 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function HomeRouter(): React.JSX.Element {
+  const navigation = useNavigation<any>();
+
+  useEffect(() => {
+    navigation.navigate('Home');
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Navigator initialRouteName={'Home'}>

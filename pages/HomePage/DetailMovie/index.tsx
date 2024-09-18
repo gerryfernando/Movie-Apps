@@ -1,25 +1,21 @@
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
-import {
-  ActivityIndicator,
-  Button,
-  Chip,
-  Text,
-  useTheme,
-} from 'react-native-paper';
+import {Button, Chip, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import API from '../../../services/axios';
 import {RootStackParamList} from '../../HomeRoute';
+import LoadingComp from '../../../components/LoadingCom';
 
 type Props = {
-  route: RouteProp<RootStackParamList, 'Detail'>;
+  route: RouteProp<RootStackParamList, 'Detail'> | any;
   navigation: any;
 };
 
-const DetailMovie: React.FC<Props> = ({route}) => {
-  const {id} = route.params;
+const DetailMovie: React.FC<Props> = () => {
+  const route = useRoute();
+  const {id} = route.params || ({} as any);
   const {colors} = useTheme();
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = React.useState<boolean>(false);
@@ -135,14 +131,7 @@ const DetailMovie: React.FC<Props> = ({route}) => {
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        <View
-          style={{
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ActivityIndicator animating={true} />
-        </View>
+        <LoadingComp />
       ) : (
         <View style={styles.fullHeightView}>
           <View>

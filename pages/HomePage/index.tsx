@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -15,6 +14,8 @@ import {ActivityIndicator, Text, useTheme} from 'react-native-paper';
 import TextInputCom from '../../components/TextInputCom';
 import ConvertGenre from '../../utils/ConvertGenre';
 import GenerateUniqueId from '../../utils/GenerateUniqueId';
+import {useUser} from '../../components/ContextProvider';
+import LoadingComp from '../../components/LoadingCom';
 
 type ResponseMovie = {
   results: Record<string, any>[];
@@ -26,12 +27,15 @@ function HomePage(): React.JSX.Element {
   );
   const [dataTopRated, setDataTopRated] = useState<Record<string, any>[]>([]);
   const [dataPopular, setDataPopular] = useState<Record<string, any>[]>([]);
-  const [name, setName] = useState<string>('');
+  const [dataSearch, setDataSearch] = useState<Record<string, any>[]>([]);
+  const {user} = useUser();
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const [pageNowPlaying, setPageNowPlaying] = useState(1);
   const [pageTopRated, setPageTopRated] = useState(1);
   const [pagePopular, setPagePopular] = useState(1);
+  const [pageSearch, setPageSearch] = useState(1);
+  const [isSearch, setIsSearch] = useState(false);
   const backgroundStyle = {
     backgroundColor: '#fff',
     flex: 1,
@@ -86,11 +90,36 @@ function HomePage(): React.JSX.Element {
 
     return await API.get<ResponseMovie>(urlP, {
       params: {
-        page: pagePopular,
+        query: pagePopular,
       },
     }).then(res => {
       setDataPopular([...dataPopular, ...res.data.results]);
     });
+  };
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      const urlS = 'search/movie';
+      if (!search || search === '') {
+        setDataSearch([]);
+        setIsSearch(false);
+        getMovieData();
+      } else {
+        const res = await API.get<ResponseMovie>(urlS, {
+          params: {
+            page: pageSearch,
+            query: search,
+          },
+        });
+        setDataSearch([...dataSearch, ...res.data.results]);
+        setIsSearch(true);
+      }
+    } catch {
+      console.log('error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getMovieData = async () => {
@@ -115,17 +144,6 @@ function HomePage(): React.JSX.Element {
     getTopRated();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageTopRated]);
-
-  useEffect(() => {
-    const getUsername = async () => {
-      const username = (await AsyncStorage.getItem(
-        'username',
-      )) as unknown as string;
-      setName(username);
-      console.log(username);
-    };
-    getUsername();
-  }, []);
 
   //Top Rated Pagination
   const renderItem = ({item}: {item: any}) => (
@@ -152,14 +170,7 @@ function HomePage(): React.JSX.Element {
   return (
     <SafeAreaView style={backgroundStyle}>
       {loading ? (
-        <View
-          style={{
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ActivityIndicator animating={true} />
-        </View>
+        <LoadingComp />
       ) : (
         <>
           <StatusBar
@@ -180,55 +191,59 @@ function HomePage(): React.JSX.Element {
               <Text style={{fontWeight: 'bold'}}>
                 Welcome,{' '}
                 <Text style={{color: colors.primary, fontSize: 18}}>
-                  {name}
+                  {user || ''}
                 </Text>
               </Text>
               <TextInputCom
                 label="Search Bar"
-                icon="magnify"
+                icon={'magnify'}
                 fullWidth
                 value={search}
                 onChangeText={(text: string) => setSearch(text)}
-                onClickIcon={() => console.log(search)}
+                onClickIcon={() => handleSearch()}
               />
-              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-                Now Played
-              </Text>
-              <ScrollView horizontal>
-                <View style={styles.row}>
-                  {dataNowPlaying?.map(val => {
-                    return (
-                      <CardCom
-                        title={val.original_title}
-                        subtitle={ConvertGenre(val.genre_ids)}
-                        img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
-                        idMovie={val?.id}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
-              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-                Popular
-              </Text>
-              <ScrollView horizontal>
-                <View style={styles.row}>
-                  {dataPopular?.map(val => {
-                    return (
-                      <CardCom
-                        title={val.original_title}
-                        subtitle={ConvertGenre(val.genre_ids)}
-                        img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
-                        idMovie={val?.id}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
-              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-                Top Rated
-              </Text>
-              {/* <FlatList
+              {!isSearch ? (
+                <>
+                  <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                    Now Played
+                  </Text>
+                  <ScrollView horizontal>
+                    <View style={styles.row}>
+                      {dataNowPlaying?.map((val, idx) => {
+                        return (
+                          <CardCom
+                            key={`now-playing-list-${idx}`}
+                            title={val.original_title}
+                            subtitle={ConvertGenre(val.genre_ids)}
+                            img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
+                            idMovie={val?.id}
+                          />
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                  <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                    Popular
+                  </Text>
+                  <ScrollView horizontal>
+                    <View style={styles.row}>
+                      {dataPopular?.map((val, idx) => {
+                        return (
+                          <CardCom
+                            key={`popular-list-${idx}`}
+                            title={val.original_title}
+                            subtitle={ConvertGenre(val.genre_ids)}
+                            img={`${process.env.IMAGE_BASE_URL}${val.poster_path}`}
+                            idMovie={val?.id}
+                          />
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                  <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                    Top Rated
+                  </Text>
+                  {/* <FlatList
                 data={dataTopRated}
                 renderItem={renderItem}
                 keyExtractor={item => `Top-Rated-${item?.uniqueId}`}
@@ -236,21 +251,43 @@ function HomePage(): React.JSX.Element {
                 onEndReached={() => setPageTopRated(pageTopRated + 1)}
                 onEndReachedThreshold={0}
               /> */}
-              <ScrollView>
-                <View style={styles.column}>
-                  {dataTopRated?.map(val => {
-                    return (
-                      <CardCom
-                        title={val.original_title}
-                        content={val.overview}
-                        img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
-                        isFull
-                        idMovie={val?.id}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
+                  <ScrollView>
+                    <View style={styles.column}>
+                      {dataTopRated?.map((val, idx) => {
+                        return (
+                          <CardCom
+                            key={`top-rated-list-${idx}`}
+                            title={val.original_title}
+                            content={val.overview}
+                            img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                            isFull
+                            idMovie={val?.id}
+                          />
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                </>
+              ) : (
+                <>
+                  <ScrollView>
+                    <View style={styles.column}>
+                      {dataSearch?.map((val, idx) => {
+                        return (
+                          <CardCom
+                            key={`search-list-${idx}`}
+                            title={val.original_title}
+                            content={val.overview}
+                            img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                            isFull
+                            idMovie={val?.id}
+                          />
+                        );
+                      })}
+                    </View>
+                  </ScrollView>
+                </>
+              )}
             </View>
           </ScrollView>
         </>

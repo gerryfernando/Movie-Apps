@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import API from '../../services/axios';
-import {ActivityIndicator, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import CardFavoriteCom from './components/CardFavoriteCom';
 import ConvertGenre from '../../utils/ConvertGenre';
 import {useFocusEffect} from '@react-navigation/native';
+import LoadingComp from '../../components/LoadingCom';
 
 type ResponseFavorite = {
   results: Record<string, any>[];
@@ -56,24 +57,19 @@ function FavoritePage(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        <View
-          style={{
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ActivityIndicator animating={true} />
-        </View>
+        <LoadingComp />
       ) : (
         <ScrollView>
           <Text variant="titleLarge">My Favorite Movie</Text>
           <View style={styles.column}>
-            {(dataFavorite || [])?.map(val => {
+            {(dataFavorite || [])?.map((val, idx: number) => {
               return (
                 <CardFavoriteCom
+                  key={`favorite-list-${idx}`}
                   title={val.original_title}
                   subtitle={ConvertGenre(val.genre_ids)}
                   img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                  idMovie={val.id}
                 />
               );
             })}

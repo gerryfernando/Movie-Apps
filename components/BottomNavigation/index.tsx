@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {BottomNavigation as BNavigation} from 'react-native-paper';
-import FavoritePage from '../../pages/FavoritePage';
 import ProfilPage from '../../pages/ProfilPage';
 import HomeRouter from '../../pages/HomeRoute';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useUser} from '../ContextProvider';
+import FavoritePage from '../../pages/FavoritePage';
 
 const BottomNavigation = () => {
   const [index, setIndex] = useState(0);
   const navigation = useNavigation<any>();
-
+  const {user} = useUser();
   const [routes] = useState([
     {
       key: 'home',
@@ -54,14 +55,30 @@ const BottomNavigation = () => {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
+        // Prevent leaving screen when back button is pressed
+        e.preventDefault();
+      });
+      return () => unsubscribe();
+    } else {
+      console.log('null');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
+    }
+  }, [navigation, user]);
+
   const renderScene = ({route}: {route: any}): JSX.Element | null => {
     switch (route.key) {
       case 'home':
-        return <HomeRouter key={`${index}_first`} />;
+        return <HomeRouter key={`${index}_first_page`} />;
       case 'favorite':
-        return <FavoritePage key={`${index}_second`} />;
+        return <FavoritePage key={`${index}_second_page`} />;
       case 'profil':
-        return <ProfilPage key={`${index}_second`} />;
+        return <ProfilPage key={`${index}_second_page`} />;
       default:
         return null;
     }

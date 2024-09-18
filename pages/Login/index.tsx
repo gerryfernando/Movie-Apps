@@ -10,22 +10,22 @@ import {
 
 import TextInputCom from '../../components/TextInputCom';
 import {Button, useTheme} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FormProvider, useForm} from 'react-hook-form';
 import API from '../../services/axios';
+import {useUser} from '../../components/ContextProvider';
 
 function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
   const {colors} = useTheme();
+  const {setUser, setSession} = useUser();
   const RHF = useForm();
   const {handleSubmit, reset} = RHF;
   const [loading, setLoading] = useState(false);
   const bgLogin = require('../../assets/bgLogin.jpg');
   const logo = require('../../assets/logo.png');
-
   const styles = StyleSheet.create({
     buttonLogin: {
       width: 220,
-      marginVertical: 20,
+      marginTop: 20,
       backgroundColor: colors?.onPrimary,
     },
     centeredView: {
@@ -75,8 +75,8 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
           },
         },
       );
-      await AsyncStorage.setItem('username', data?.username);
-      await AsyncStorage.setItem('sessionId', resSession?.data?.session_id);
+      setUser(data?.username);
+      setSession(resSession?.data?.session_id);
       navigation.navigate('Main');
       reset({});
     } catch (error) {
@@ -87,6 +87,7 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
       setLoading(false);
     }
   };
+
   return (
     <SafeAreaView>
       <View style={styles.centeredView}>
@@ -123,14 +124,17 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
                 mode="contained">
                 Login
               </Button>
-              {/* <Button
+              <Button
                 textColor={colors.tertiary}
                 style={styles.buttonLogin}
-                onPress={() => navigation.navigate('Main')}
+                onPress={() => {
+                  navigation.navigate('Main');
+                  setUser('Guest');
+                }}
                 loading={loading}
                 mode="contained">
-                test
-              </Button> */}
+                Login As Guest
+              </Button>
             </View>
           </FormProvider>
         </ImageBackground>

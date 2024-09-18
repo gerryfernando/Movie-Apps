@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {ImageBackground, SafeAreaView, StyleSheet, View} from 'react-native';
@@ -11,6 +10,8 @@ import {
   useTheme,
 } from 'react-native-paper';
 import API from '../../services/axios';
+import {useUser} from '../../components/ContextProvider';
+import LoadingComp from '../../components/LoadingCom';
 
 interface ResponseProfile {
   avatar: Avatar;
@@ -36,9 +37,11 @@ interface Tmdb {
 }
 function ProfilPage(): React.JSX.Element {
   const {colors} = useTheme();
+  const {setUser, setSession} = useUser();
   const navigation = useNavigation<any>();
   const [data, setData] = useState<ResponseProfile | null>(null);
   const [visible, setVisible] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const bgProfil = require('../../assets/bgProfil.jpg');
 
   const showDialog = () => setVisible(true);
@@ -46,43 +49,73 @@ function ProfilPage(): React.JSX.Element {
   const hideDialog = () => setVisible(false);
 
   const Logout = async () => {
-    await AsyncStorage.clear();
+    setUser(null);
+    setSession(null);
     navigation.navigate('Login');
     hideDialog();
   };
 
   const getDataProfil = async () => {
     try {
+      setLoading(true);
       const url = 'account';
       const res = await API.get<ResponseProfile>(url);
       setData(res.data);
+      console.log(res.data);
     } catch {
       console.log('error');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const renderPointDetail = (label: string, content: string) => {
+    return (
+      <View style={{marginBottom: 15}}>
+        <Text variant="bodyMedium" style={{fontWeight: 'bold'}}>
+          {label} :{' '}
+        </Text>
+        <Text variant="bodyMedium" style={{fontWeight: '600'}}>
+          {content}
+        </Text>
+      </View>
+    );
+  };
   useEffect(() => {
     getDataProfil();
   }, []);
-  return (
-    <SafeAreaView>
-      <View style={styles.centeredView}>
-        <View
-          style={{
-            width: '100%',
-            alignItems: 'center',
-            paddingVertical: 20,
-          }}>
-          <ImageBackground
-            style={styles.imageBG}
-            source={bgProfil}
-            resizeMode="cover"
-          />
-          <Avatar.Text
-            size={125}
-            label={data?.username ? data?.username[0].toUpperCase() : ''}
-            style={{marginTop: 50}}
-          />
+  return loading ? (
+    <LoadingComp />
+  ) : (
+    <SafeAreaView style={styles.centeredView}>
+      <View style={styles.container}>
+        <View style={{width: '100%'}}>
+          <View style={styles.containerBG}>
+            <ImageBackground
+              style={styles.imageBG}
+              source={bgProfil}
+              resizeMode="cover"
+            />
+            {data?.avatar.gravatar.hash ? (
+              <Avatar.Image
+                size={125}
+                source={{
+                  uri: `https://www.gravatar.com/avatar/${data?.avatar.gravatar.hash}?s=200`,
+                }}
+                style={{marginTop: 50}}
+              />
+            ) : (
+              <Avatar.Text
+                size={125}
+                label={data?.username ? data?.username[0].toUpperCase() : ''}
+                style={{marginTop: 50}}
+              />
+            )}
+          </View>
+          <View style={styles.containerContent}>
+            {renderPointDetail('Username', data?.username || '-')}
+            {renderPointDetail('Id', data?.id.toString() || '-')}
+          </View>
         </View>
         <Button
           textColor={colors.tertiary}
@@ -120,16 +153,30 @@ function ProfilPage(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '100%',
+    paddingBottom: 50,
   },
   centeredView: {
     height: '100%',
-    alignItems: 'center',
   },
   imageBG: {
     flex: 1,
     justifyContent: 'center',
     width: '100%',
     height: 250,
+  },
+  containerBG: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 20,
+    marginBottom: 100,
+  },
+  containerContent: {
+    width: '100%',
+    padding: 30,
   },
 });
 

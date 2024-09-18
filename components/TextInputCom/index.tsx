@@ -12,6 +12,7 @@ type Props = {
   value?: string;
   onChangeText?: (text: string) => void;
   onClickIcon?: () => void;
+  onEnter?: () => void;
   RHF?: any;
   name?: string;
   required?: boolean;
@@ -30,6 +31,7 @@ function TextInputCom(props: Props): React.JSX.Element {
     onClickIcon = null,
     name,
     required = false,
+    onEnter,
   } = props;
 
   const {control = {}, formState: {errors = {}} = {}} = RHF || {};
@@ -78,6 +80,7 @@ function TextInputCom(props: Props): React.JSX.Element {
                 secureTextEntry={password && passwordVisible}
                 theme={{roundness: 10}}
                 right={rightComp}
+                onSubmitEditing={onEnter}
                 {...props}
               />
             )}
@@ -102,6 +105,7 @@ function TextInputCom(props: Props): React.JSX.Element {
           placeholder={placeholder}
           secureTextEntry={password && passwordVisible}
           theme={{roundness: 10}}
+          onSubmitEditing={onEnter}
           right={rightComp}
           {...props}
         />

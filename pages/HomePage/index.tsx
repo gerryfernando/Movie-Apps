@@ -112,7 +112,7 @@ function HomePage(): React.JSX.Element {
             query: search,
           },
         });
-        setDataSearch([...dataSearch, ...res.data.results]);
+        setDataSearch([...res.data.results]);
         setIsSearch(true);
       }
     } catch {
@@ -201,6 +201,7 @@ function HomePage(): React.JSX.Element {
                 value={search}
                 onChangeText={(text: string) => setSearch(text)}
                 onClickIcon={() => handleSearch()}
+                onEnter={handleSearch}
               />
               {!isSearch ? (
                 <>

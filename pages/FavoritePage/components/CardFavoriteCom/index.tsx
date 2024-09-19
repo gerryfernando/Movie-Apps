@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {Button, Card} from 'react-native-paper';
+import {Button, Card, Text} from 'react-native-paper';
 
 interface Props {
   title?: string;
@@ -28,7 +28,12 @@ const CardFavoriteCom: React.FC<Props> = props => {
           setErrorImage(true);
         }}
       />
-      <Card.Title title={title} subtitle={subtitle || ''} />
+      <Card.Title title={title} />
+      {subtitle && (
+        <Card.Content>
+          <Text variant="bodyMedium">{subtitle}</Text>
+        </Card.Content>
+      )}
       {/* <Card.Actions>
         <Button
           mode="contained"

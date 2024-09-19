@@ -11,6 +11,7 @@ import {
   Avatar,
   Button,
   Dialog,
+  Divider,
   Portal,
   Text,
   useTheme,
@@ -80,13 +81,14 @@ function ProfilPage(): React.JSX.Element {
 
   const renderPointDetail = (label: string, content: string) => {
     return (
-      <View style={{marginBottom: 15}}>
-        <Text variant="bodyMedium" style={{fontWeight: 'bold'}}>
+      <View style={{marginBottom: 10, rowGap: 10}}>
+        <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
           {label} :{' '}
         </Text>
-        <Text variant="bodyMedium" style={{fontWeight: '600'}}>
+        <Text variant="titleMedium" style={{fontWeight: '600'}}>
           {content}
         </Text>
+        <Divider />
       </View>
     );
   };
@@ -148,8 +150,10 @@ function ProfilPage(): React.JSX.Element {
             )}
           </View>
           <View style={styles.containerContent}>
+            {renderPointDetail('ID', data?.id.toString() || '-')}
             {renderPointDetail('Username', data?.username || '-')}
-            {renderPointDetail('Id', data?.id.toString() || '-')}
+            {renderPointDetail('Name', data?.name || '-')}
+            {renderPointDetail('Country', data?.iso_3166_1 || '-')}
           </View>
         </View>
         <Button

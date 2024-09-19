@@ -13,6 +13,9 @@ interface Props {
 
 const CardCom: React.FC<Props> = props => {
   const {title, subtitle, img, isFull = false, idMovie, content} = props;
+  const [errorImage, setErrorImage] = React.useState(false);
+  const noImage = require('../../../../assets/noImage.png');
+
   const navigation = useNavigation<any>();
   return (
     <Card
@@ -23,7 +26,10 @@ const CardCom: React.FC<Props> = props => {
       }}>
       <Card.Cover
         style={{borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
-        source={{uri: img}}
+        source={errorImage ? noImage : {uri: img}}
+        onError={() => {
+          setErrorImage(true);
+        }}
       />
       <Card.Title title={title} subtitle={subtitle || ''} />
       {content && (

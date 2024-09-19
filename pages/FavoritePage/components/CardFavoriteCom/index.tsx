@@ -12,6 +12,8 @@ interface Props {
 
 const CardFavoriteCom: React.FC<Props> = props => {
   const {title, subtitle, img, idMovie} = props;
+  const [errorImage, setErrorImage] = React.useState(false);
+  const noImage = require('../../../../assets/noImage.png');
   // const navigation = useNavigation<any>();
   return (
     <Card
@@ -21,7 +23,10 @@ const CardFavoriteCom: React.FC<Props> = props => {
       }}>
       <Card.Cover
         style={{borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
-        source={{uri: img}}
+        source={errorImage ? noImage : {uri: img}}
+        onError={e => {
+          setErrorImage(true);
+        }}
       />
       <Card.Title title={title} subtitle={subtitle || ''} />
       {/* <Card.Actions>

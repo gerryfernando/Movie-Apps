@@ -59,22 +59,25 @@ function FavoritePage(): React.JSX.Element {
       {loading ? (
         <LoadingComp />
       ) : (
-        <ScrollView>
-          <Text variant="titleLarge">My Favorite Movie</Text>
-          <View style={styles.column}>
-            {(dataFavorite || [])?.map((val, idx: number) => {
-              return (
-                <CardFavoriteCom
-                  key={`favorite-list-${idx}`}
-                  title={val.original_title}
-                  subtitle={ConvertGenre(val.genre_ids)}
-                  img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
-                  idMovie={val.id}
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
+        <>
+          <Text variant="titleLarge">My Favorite</Text>
+
+          <ScrollView>
+            <View style={styles.column}>
+              {(dataFavorite || [])?.map((val, idx: number) => {
+                return (
+                  <CardFavoriteCom
+                    key={`favorite-list-${idx}`}
+                    title={val.original_title}
+                    subtitle={ConvertGenre(val.genre_ids)}
+                    img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                    idMovie={val.id}
+                  />
+                );
+              })}
+            </View>
+          </ScrollView>
+        </>
       )}
     </SafeAreaView>
   );

@@ -273,18 +273,29 @@ function HomePage(): React.JSX.Element {
                 <>
                   <ScrollView>
                     <View style={styles.column}>
-                      {dataSearch?.map((val, idx) => {
-                        return (
-                          <CardCom
-                            key={`search-list-${idx}`}
-                            title={val.original_title}
-                            content={val.overview}
-                            img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
-                            isFull
-                            idMovie={val?.id}
-                          />
-                        );
-                      })}
+                      {dataSearch.length > 1 ? (
+                        dataSearch?.map((val, idx) => {
+                          return (
+                            <CardCom
+                              key={`search-list-${idx}`}
+                              title={val.original_title}
+                              content={val.overview}
+                              img={`${process.env.IMAGE_BASE_URL}${val.backdrop_path}`}
+                              isFull
+                              idMovie={val?.id}
+                            />
+                          );
+                        })
+                      ) : (
+                        <View
+                          style={{
+                            marginTop: 300,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Text>No Data</Text>
+                        </View>
+                      )}
                     </View>
                   </ScrollView>
                 </>

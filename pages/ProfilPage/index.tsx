@@ -1,6 +1,12 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {ImageBackground, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   Avatar,
   Button,
@@ -12,6 +18,7 @@ import {
 import API from '../../services/axios';
 import {useUser} from '../../components/ContextProvider';
 import LoadingComp from '../../components/LoadingCom';
+import ImageView from 'react-native-image-viewing';
 
 interface ResponseProfile {
   avatar: Avatar;
@@ -42,7 +49,10 @@ function ProfilPage(): React.JSX.Element {
   const [data, setData] = useState<ResponseProfile | null>(null);
   const [visible, setVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [showImage, setShowImage] = React.useState(false);
+  const [errorImage, setErrorImage] = React.useState(false);
   const bgProfil = require('../../assets/bgProfil.jpg');
+  const noImage = require('../../assets/noImage.png');
 
   const showDialog = () => setVisible(true);
 
@@ -61,7 +71,6 @@ function ProfilPage(): React.JSX.Element {
       const url = 'account';
       const res = await API.get<ResponseProfile>(url);
       setData(res.data);
-      console.log(res.data);
     } catch {
       console.log('error');
     } finally {
@@ -97,13 +106,39 @@ function ProfilPage(): React.JSX.Element {
               resizeMode="cover"
             />
             {data?.avatar.gravatar.hash ? (
-              <Avatar.Image
-                size={125}
-                source={{
-                  uri: `https://www.gravatar.com/avatar/${data?.avatar.gravatar.hash}?s=200`,
-                }}
-                style={{marginTop: 50}}
-              />
+              <>
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowImage(true);
+                  }}>
+                  <Avatar.Image
+                    size={125}
+                    source={
+                      errorImage
+                        ? noImage
+                        : {
+                            uri: `https://www.gravatar.com/avatar/${data?.avatar.gravatar.hash}?s=200`,
+                          }
+                    }
+                    onError={() => {
+                      setErrorImage(true);
+                    }}
+                    style={{marginTop: 50}}
+                  />
+                </TouchableOpacity>
+                <ImageView
+                  images={[
+                    {
+                      uri: `https://www.gravatar.com/avatar/${data?.avatar.gravatar.hash}?s=200`,
+                    },
+                  ]}
+                  imageIndex={0}
+                  visible={showImage}
+                  onRequestClose={() => {
+                    setShowImage(false);
+                  }}
+                />
+              </>
             ) : (
               <Avatar.Text
                 size={125}

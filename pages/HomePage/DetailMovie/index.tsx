@@ -1,12 +1,19 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Button, Chip, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import API from '../../../services/axios';
 import {RootStackParamList} from '../../HomeRoute';
 import LoadingComp from '../../../components/LoadingCom';
+import ImageView from 'react-native-image-viewing';
 
 type Props = {
   route: RouteProp<RootStackParamList, 'Detail'> | any;
@@ -17,11 +24,20 @@ const DetailMovie: React.FC<Props> = () => {
   const route = useRoute();
   const {id} = route.params || ({} as any);
   const {colors} = useTheme();
+  const [showZoomImage, setShowZoomImage] = useState(false);
+  const [showZoomImagePoster, setShowZoomImagePoster] = useState(false);
+  const [indexZoomImage, setIndexZoomImage] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = React.useState<boolean>(false);
+  const [errorImageBackdrop, setErrorImageBackdrop] = React.useState(false);
+  const [errorImagePoster, setErrorImagePoster] = React.useState(false);
+  const [errorImageList, setErrorImageList] = React.useState(false);
+  const noImage = require('../../../assets/noImage.png');
+
   const [data, setData] = useState<Record<string, any>>({});
   const [dataImages, setDataImages] = useState<Record<string, any>[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
+
   const getDetail = async () => {
     try {
       const url = 'movie/' + id;
@@ -137,17 +153,52 @@ const DetailMovie: React.FC<Props> = () => {
           <View>
             <Image
               style={styles.imageBackdrop}
-              source={{
-                uri: `${process.env.IMAGE_BASE_URL}${data.backdrop_path}`,
+              source={
+                errorImageBackdrop
+                  ? noImage
+                  : {
+                      uri: `${process.env.IMAGE_BASE_URL}${data.backdrop_path}`,
+                    }
+              }
+              onError={() => {
+                setErrorImageBackdrop(true);
               }}
             />
             <ScrollView>
               <View style={styles.contentContainer}>
                 <View style={styles.contentHeader}>
-                  <Image
-                    style={styles.imagePoster}
-                    source={{
-                      uri: `${process.env.IMAGE_BASE_URL}${data.poster_path}`,
+                  <TouchableOpacity
+                    onPress={() => {
+                      setShowZoomImagePoster(true);
+                    }}>
+                    <Image
+                      style={styles.imagePoster}
+                      source={
+                        errorImagePoster
+                          ? noImage
+                          : {
+                              uri: `${process.env.IMAGE_BASE_URL}${data.poster_path}`,
+                            }
+                      }
+                      onError={() => {
+                        setErrorImagePoster(true);
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <ImageView
+                    images={
+                      errorImagePoster
+                        ? [noImage]
+                        : [
+                            {
+                              uri: `${process.env.IMAGE_BASE_URL}${data.poster_path}`,
+                            },
+                          ]
+                    }
+                    imageIndex={0}
+                    visible={showZoomImagePoster}
+                    onRequestClose={() => {
+                      setShowZoomImagePoster(false);
                     }}
                   />
                   <View style={styles.contentTitle}>
@@ -196,19 +247,43 @@ const DetailMovie: React.FC<Props> = () => {
                         ...styles.rowContainer,
                         columnGap: 10,
                       }}>
-                      {dataImages?.map(val => {
+                      {dataImages?.map((val, idx: number) => {
                         return (
-                          <Image
-                            style={styles.imageList}
-                            source={{
-                              uri: `${process.env.IMAGE_BASE_URL}${val.file_path}`,
-                            }}
-                          />
+                          <TouchableOpacity
+                            onPress={() => {
+                              setShowZoomImage(true);
+                              setIndexZoomImage(idx);
+                            }}>
+                            <Image
+                              style={styles.imageList}
+                              source={
+                                errorImageList
+                                  ? noImage
+                                  : {
+                                      uri: `${process.env.IMAGE_BASE_URL}${val.file_path}`,
+                                    }
+                              }
+                              onError={() => {
+                                setErrorImageList(true);
+                              }}
+                            />
+                          </TouchableOpacity>
                         );
                       })}
                     </View>
                   </ScrollView>
                 </View>
+                <ImageView
+                  images={dataImages.map((val: any) => ({
+                    uri: `${process.env.IMAGE_BASE_URL}${val.file_path}`,
+                  }))}
+                  imageIndex={indexZoomImage}
+                  visible={showZoomImage}
+                  onRequestClose={() => {
+                    setShowZoomImage(false);
+                    setIndexZoomImage(0);
+                  }}
+                />
                 <View style={{rowGap: 10}}>
                   <View>
                     <Chip

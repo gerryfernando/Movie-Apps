@@ -24,6 +24,7 @@ const DetailMovie: React.FC<Props> = () => {
   const route = useRoute();
   const {id} = route.params || ({} as any);
   const {colors} = useTheme();
+  const noImage = require('../../../assets/noImage.png');
   const [showZoomImage, setShowZoomImage] = useState(false);
   const [showZoomImagePoster, setShowZoomImagePoster] = useState(false);
   const [indexZoomImage, setIndexZoomImage] = useState<number>(0);
@@ -32,7 +33,6 @@ const DetailMovie: React.FC<Props> = () => {
   const [errorImageBackdrop, setErrorImageBackdrop] = React.useState(false);
   const [errorImagePoster, setErrorImagePoster] = React.useState(false);
   const [errorImageList, setErrorImageList] = React.useState(false);
-  const noImage = require('../../../assets/noImage.png');
 
   const [data, setData] = useState<Record<string, any>>({});
   const [dataImages, setDataImages] = useState<Record<string, any>[]>([]);

@@ -124,7 +124,7 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
                 mode="contained">
                 Login
               </Button>
-              <Button
+              {/* <Button
                 textColor={colors.tertiary}
                 style={styles.buttonLogin}
                 onPress={() => {
@@ -134,7 +134,7 @@ function LoginPage({navigation}: {navigation: any}): React.JSX.Element {
                 loading={loading}
                 mode="contained">
                 Login As Guest
-              </Button>
+              </Button> */}
             </View>
           </FormProvider>
         </ImageBackground>

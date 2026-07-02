@@ -1,9 +1,12 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<img width="720" height="1600" alt="WhatsApp Image 2026-07-02 at 5 46 49 PM" src="https://github.com/user-attachments/assets/787f8980-e307-4e3c-ba7c-052c2c841476" />This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 # Preview Apps
-<img width="180" height="400" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM (2)" src="https://github.com/user-attachments/assets/cd0c0ac6-d8ab-4aa8-bbf4-e6d98b930173" />
-<img width="180" height="400" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM (1)" src="https://github.com/user-attachments/assets/26715a5e-c383-4913-8684-b56077512b96" />
-<img width="180" height="400" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM" src="https://github.com/user-attachments/assets/8abf5dde-8048-4cb8-b82b-e87ffb4ea2e1" />
-<img width="180" height="400" alt="WhatsApp Image 2026-07-02 at 5 44 05 PM" src="https://github.com/user-attachments/assets/3ea1bfe1-05c4-42bc-9d16-2256b3dc8c13" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM (2)" src="https://github.com/user-attachments/assets/cd0c0ac6-d8ab-4aa8-bbf4-e6d98b930173" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM (1)" src="https://github.com/user-attachments/assets/26715a5e-c383-4913-8684-b56077512b96" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 42 21 PM" src="https://github.com/user-attachments/assets/8abf5dde-8048-4cb8-b82b-e87ffb4ea2e1" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 44 05 PM" src="https://github.com/user-attachments/assets/3ea1bfe1-05c4-42bc-9d16-2256b3dc8c13" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 46 49 PM" src="https://github.com/user-attachments/assets/10cfd6d1-c6b0-43d2-877c-d41ab1f314b8" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 46 51 PM" src="https://github.com/user-attachments/assets/3884427d-6952-457c-98c8-d2fef0fb1072" />
+<img width="270" height="600" alt="WhatsApp Image 2026-07-02 at 5 46 49 PM (1)" src="https://github.com/user-attachments/assets/02974722-fdf6-4e6b-8a37-1ff14d2ac420" />
 
 # Getting Started
 
